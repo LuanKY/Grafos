@@ -172,13 +172,13 @@ class Grafo:
         for v in self.vertices:
             if v.i in x:
                 vizinhos = self.estrutura.get(v.i, [])
-                for vizinho in vizinhos:
-                    if vizinho in x:
+                for v2 in vizinhos:
+                    if v2 in x:
                         return False
             elif v.i in y:
                 vizinhos = self.estrutura.get(v.i, [])
-                for vizinho in vizinhos:
-                    if vizinho in y:
+                for v2 in vizinhos:
+                    if v2 in y:
                         return False
         return True
 
