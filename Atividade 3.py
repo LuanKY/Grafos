@@ -1,4 +1,4 @@
-# Exercício 3.3 1/2 
+# Exercício 3.3 1/3 
 class Vertice:
     def __init__(self, i, r):
         # i -> indice | r -> rotulo
@@ -195,17 +195,12 @@ class Grafo:
                 if (a not in self.arestas_arvore and a not in self.arestas_retorno):
                     self.arestas_retorno.append(a)
 
-            # print("Busca em Profundidade:")
-            # for v in l_v:
-            #     print(self.vertices[v].r, end=" ")
-
-            # print("\nArestas da árvore:")
-            # for aresta in self.arestas_arvore:
-            #     print(f"{aresta.v1} - {aresta.v2}")
-            
-            # print("Arestas de retorno:")
-            # for aresta in self.arestas_retorno:
-            #     print(f"{aresta.v1} - {aresta.v2}")
+            print("Busca em Profundidade:")
+            for p, v in enumerate(l_v, start=1):
+                print(self.vertices[v].r, end=" ")
+                # Exercício 3.3 3/3
+                self.vertices[v].prof_ent = p
+            print()
         else:
             print("A busca em profundidade nao pode ser realizada nesse grafo")   
 
@@ -223,6 +218,18 @@ class Grafo:
                 if (a not in self.arestas_arvore):
                     self.arestas_arvore.append(a)
                 self.busca_em_profundidade_recursiva(a.v1, v_vi, l_v)
+        
+        # Exercício 3.3 2/3
+        l_p = []  #lista de profundidade
+        for p in self.vertices:
+            l_p.append(p.prof_sai)
+        
+        l_p.sort(key=lambda x: -float('inf') if x is None else x)
+
+        if (l_p[-1] == None):
+            self.vertices[v].prof_sai = 1
+        elif (v in v_vi and self.vertices[v].prof_sai == None):
+            self.vertices[v].prof_sai = (l_p[-1]) +1
     
     def verificar_grafo_simples_e_conexo(self):
         if len(self.vertices) == 0:
@@ -266,8 +273,30 @@ def main():
     grafo.add_aresta(5, 7)
     grafo.add_aresta(6, 7)
 
-    # Realizar busca em profundidade a partir do vértice 0
-    grafo.imprimir_grafo()
+    # Realizar busca em profundidade a partir do v1
+    print('-=' * 20)
     grafo.busca_em_profundidade(0)
+
+    print('-=' * 20)
+    print("Arestas da árvore:")
+    for aresta in grafo.arestas_arvore:
+        print(f"{aresta.v1} - {aresta.v2}")
+    
+    print('-=' * 20)
+    print("Arestas de retorno:")
+    for aresta in grafo.arestas_retorno:
+        print(f"{aresta.v1} - {aresta.v2}")
+    
+    print('-=' * 20)
+    print("Profundidade de entrada:")
+    for v in grafo.vertices:
+        print(v.prof_ent, end=" ")
+    print()
+
+    print('-=' * 20)
+    print("Profundidade de saida:")
+    for v in grafo.vertices:
+        print(v.prof_sai, end=" ")
+    print()
 
 main()
