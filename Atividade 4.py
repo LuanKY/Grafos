@@ -250,7 +250,7 @@ def main():
     arestas_s = {grafo.arestas[0],grafo.arestas[1]}
     subgrafo = grafo.subgrafo(vertices_s,arestas_s)
     for vertice in subgrafo.vertices:
-        print(f"Vértice {vertice.r}")
+        print(f"Vértice: Índice - {vertice.i} Rotulo - {vertice.r}")
     for aresta in subgrafo.arestas:
         print(f"Aresta {aresta.v1} - {aresta.v2}")
 
