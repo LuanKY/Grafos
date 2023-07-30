@@ -154,16 +154,16 @@ class Grafo:
         return vertice in self.vertices
     
     #Exercício 4.1  
-    def subgrafo(self, vertices_subgrafo, arestas_s):
+    def subgrafo(self, vertices_s, arestas_s):
         n_Grafo = Grafo(1,8)
         # Adiciona os vértices do subgrafo ao novo grafo
-        for vertice in vertices_subgrafo:
+        for vertice in vertices_s:
             n_Grafo.add_vertice(vertice.i, vertice.r)
         # Adiciona as arestas do subgrafo ao novo grafo
         for aresta in arestas_s:
-            v1,v2 = aresta
-            if self.existe_vertice(v1) and self.existe_vertice(v2):
-                n_Grafo.add_aresta(v1.i, v2.i)
+            i_v1 = aresta.v1
+            i_v2 = aresta.v2
+            n_Grafo.add_aresta(i_v1, i_v2)
         return n_Grafo
 
     # Exercício 4.2
@@ -246,14 +246,13 @@ def main():
 
 
     # 4.6 a)
-    vertices_subgrafo = {grafo.encontrar_vertice_por_indice(0), grafo.encontrar_vertice_por_indice(1), grafo.encontrar_vertice_por_indice(2)}
-    arestas_s = {((grafo.encontrar_vertice_por_indice(0),grafo.encontrar_vertice_por_indice(1)),
-                    (grafo.encontrar_vertice_por_indice(1),grafo.encontrar_vertice_por_indice(2)),(grafo.encontrar_vertice_por_indice(2),grafo.encontrar_vertice_por_indice(4)))}
-    subgrafo = grafo.subgrafo(vertices_subgrafo, arestas_s)
+    vertices_s = {grafo.encontrar_vertice_por_indice(0), grafo.encontrar_vertice_por_indice(1), grafo.encontrar_vertice_por_indice(2)}
+    arestas_s = {grafo.arestas[0],grafo.arestas[1]}
+    subgrafo = grafo.subgrafo(vertices_s,arestas_s)
     for vertice in subgrafo.vertices:
         print(f"Vértice {vertice.r}")
     for aresta in subgrafo.arestas:
-        print(f"Aresta {aresta.v1.r} - {aresta.v2.r}")
+        print(f"Aresta {aresta.v1} - {aresta.v2}")
 
     # 4.6 b)
     print('-=' * 20)
