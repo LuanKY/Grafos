@@ -167,61 +167,65 @@ class Grafo:
         return n_Grafo
 
     # Exercício 4.2
-    def s_induzido(self, vertices_subgrafo):
+    def s_induzido(self, vertices_s):
         n_Grafo = Grafo(1,8)
         # Adiciona os vértices do subgrafo ao novo grafo
-        for vertice in vertices_subgrafo:
+        for vertice in vertices_s:
             n_Grafo.add_vertice(vertice.i, vertice.r)
         # Adiciona as arestas do subgrafo ao novo grafo
         for aresta in self.arestas:
-            if aresta.v1 in vertices_subgrafo and aresta.v2 in vertices_subgrafo:
-                n_Grafo.add_aresta(aresta.v1.i, aresta.v2.i)
+            i_v1 = aresta.v1
+            i_v2 = aresta.v2
+            if self.vertices[i_v1] in vertices_s and self.vertices[i_v2] in vertices_s:
+                n_Grafo.add_aresta(i_v1, i_v2)
         return n_Grafo
     
-    #Exercício 4.3
-    def subtrair_vertices(self, vertices_subtrair):
-        n_Grafo = Grafo(1,8)
-        # Adiciona todos os vértices do grafo original ao novo grafo, exceto os do conjunto vertices_subtrair
-        for vertice in self.vertices:
-            if vertice not in vertices_subtrair:
-                n_Grafo.add_vertice(vertice.i, vertice.r)
-        # Adiciona as arestas do grafo original ao novo grafo, mantendo apenas as que ainda têm vértices válidos
-        for aresta in self.arestas:
-            if aresta.v1 not in vertices_subtrair and aresta.v2 not in vertices_subtrair:
-                n_Grafo.add_aresta(aresta.v1.i, aresta.v2.i)
+    # #Exercício 4.3
+    # def subtrair_vertices(self, vertices_subtrair):
+    #     n_Grafo = Grafo(1,8)
+    #     # Adiciona todos os vértices do grafo original ao novo grafo, exceto os do conjunto vertices_subtrair
+    #     for vertice in self.vertices:
+    #         if vertice not in vertices_subtrair:
+    #             n_Grafo.add_vertice(vertice.i, vertice.r)
+    #     # Adiciona as arestas do grafo original ao novo grafo, mantendo apenas as que ainda têm vértices válidos
+    #     for aresta in self.arestas:
+    #         i_v1 = aresta.v1
+    #         i_v2 = aresta.v2
+    #         if self.vertices[i_v1] not in vertices_subtrair and self.vertices[i_v2] not in vertices_subtrair:
+    #             n_Grafo.add_aresta(i_v1, i_v2)
 
-        return n_Grafo
+    #     return n_Grafo
 
-    # Exercício 4.4
-    def s_aresta(self, arestas_s):
-        n_Grafo = Grafo(1,8)
-        # Adiciona os vértices presentes nas arestas do subgrafo ao novo grafo
-        # v_p -> vertices presentes; v1 e v2 -> vertice
-        v_p = set()
-        for aresta in arestas_s:
-            v1, v2 = aresta
-            v_p.add(v1)
-            v_p.add(v2)
-        for vertice in v_p:
-            n_Grafo.add_vertice(vertice.i, vertice.r)
-        # Adiciona as arestas do subgrafo ao novo grafo
-        for aresta in arestas_s:
-            v1, v2 = aresta
-            if self.existe_vertice(v1) and self.existe_vertice(v2):
-                n_Grafo.add_aresta(v1.i, v2.i)
-        return n_Grafo
+    # # Exercício 4.4
+    # def s_aresta(self, arestas_s):
+    #     n_Grafo = Grafo(1,8)
+    #     # Adiciona os vértices presentes nas arestas do subgrafo ao novo grafo
+    #     # v_p -> vertices presentes; v1 e v2 -> vertice
+    #     v_p = set()
+    #     for aresta in arestas_s:
+    #         v1, v2 = aresta
+    #         v_p.add(v1)
+    #         v_p.add(v2)
+    #     for vertice in v_p:
+    #         n_Grafo.add_vertice(vertice.i, vertice.r)
+    #     # Adiciona as arestas do subgrafo ao novo grafo
+    #     for aresta in arestas_s:
+    #         v1, v2 = aresta
+    #         if self.existe_vertice(v1) and self.existe_vertice(v2):
+    #             n_Grafo.add_aresta(v1.i, v2.i)
+    #     return n_Grafo
 
-    # Exercício 4.5
-    def subtrair_arestas(self, arestas_subtrair):
-        n_Grafo = Grafo(1,8)
-        # Adiciona todos os vértices do grafo original ao novo grafo
-        for vertice in self.vertices:
-            n_Grafo.add_vertice(vertice.i, vertice.r)
-        # Adiciona as arestas do grafo original ao novo grafo, exceto as do conjunto arestas_subtrair
-        for aresta in self.arestas:
-            if aresta not in arestas_subtrair:
-                n_Grafo.add_aresta(aresta.v1.i, aresta.v2.i)
-        return n_Grafo
+    # # Exercício 4.5
+    # def subtrair_arestas(self, arestas_subtrair):
+    #     n_Grafo = Grafo(1,8)
+    #     # Adiciona todos os vértices do grafo original ao novo grafo
+    #     for vertice in self.vertices:
+    #         n_Grafo.add_vertice(vertice.i, vertice.r)
+    #     # Adiciona as arestas do grafo original ao novo grafo, exceto as do conjunto arestas_subtrair
+    #     for aresta in self.arestas:
+    #         if aresta not in arestas_subtrair:
+    #             n_Grafo.add_aresta(aresta.v1.i, aresta.v2.i)
+    #     return n_Grafo
 
 # Exercício 4.6
 def main():
@@ -256,40 +260,43 @@ def main():
 
     # 4.6 b)
     print('-=' * 20)
-    vertices_subgrafo = {grafo.encontrar_vertice_por_indice(0), grafo.encontrar_vertice_por_indice(1), grafo.encontrar_vertice_por_indice(2)}
-    s_induzido = grafo.s_induzido(vertices_subgrafo)
-    for vertice in s_induzido.vertices:
-        print(f"Vértice {vertice.r}")
-    for aresta in s_induzido.arestas:
-        print(f"Aresta {aresta.v1.r} - {aresta.v2.r}")
+    vertices_s = {grafo.encontrar_vertice_por_indice(0), grafo.encontrar_vertice_por_indice(1), grafo.encontrar_vertice_por_indice(2)}
+    induzido = grafo.s_induzido(vertices_s)
+    for vertice in induzido.vertices:
+        print(f"Vértice: Índice - {vertice.i} Rotulo - {vertice.r}")
+    for aresta in induzido.arestas:
+        print(f"Aresta {aresta.v1} - {aresta.v2}")
 
     # 4.6 c)
-    vertices_subgrafo = {grafo.encontrar_vertice_por_indice(1), grafo.encontrar_vertice_por_indice(2), grafo.encontrar_vertice_por_indice(3), grafo.encontrar_vertice_por_indice(0)}
-    s_induzido = grafo.s_induzido(vertices_subgrafo)
-    for vertice in s_induzido.vertices:
-        print(f"Vértice {vertice.r}")
-    for aresta in s_induzido.arestas:
-        print(f"Aresta {aresta.v1.r} - {aresta.v2.r}")
-
-    # 4.6 d)
     print('-=' * 20)
-    vertices_subtrair = {grafo.encontrar_vertice_por_indice(0), grafo.encontrar_vertice_por_indice(4)}
-    subgrafo = grafo.subtrair_vertices(vertices_subtrair)
-    for vertice in subgrafo.vertices:
-        print(f"Vértice {vertice.r}")
-    for aresta in subgrafo.arestas:
-        print(f"Aresta {aresta.v1.r} - {aresta.v2.r}")
-
-    # 4.6 e)
-    print('-=' * 20)
-    arestas_s = {(grafo.encontrar_vertice_por_indice(0), grafo.encontrar_vertice_por_indice(1)),
-                    (grafo.encontrar_vertice_por_indice(3), grafo.encontrar_vertice_por_indice(4)),
-                    (grafo.encontrar_vertice_por_indice(0),grafo.encontrar_vertice_por_indice(2)),
-                    (grafo.encontrar_vertice_por_indice(2),grafo.encontrar_vertice_por_indice(3))}
-    s_aresta = grafo.s_aresta(arestas_s)
-    for vertice in s_aresta.vertices:
-        print(f"Vértice {vertice.r}")
-    for aresta in s_aresta.arestas:
+    vertices_s = {grafo.encontrar_vertice_por_indice(1), grafo.encontrar_vertice_por_indice(2), grafo.encontrar_vertice_por_indice(3), grafo.encontrar_vertice_por_indice(0)}
+    induzido2 = grafo.s_induzido(vertices_s)
+    for vertice in induzido2.vertices:
+        print(f"Vértice: Índice - {vertice.i} Rotulo - {vertice.r}")
+    for aresta in induzido2.arestas:
         print(f"Aresta {aresta.v1} - {aresta.v2}")
+
+    # # 4.6 d)
+    # print('-=' * 20)
+    # vertices_subtrair = {grafo.encontrar_vertice_por_indice(0), grafo.encontrar_vertice_por_indice(4)}
+    # subgrafo = grafo.subtrair_vertices(vertices_subtrair)
+    # for vertice in subgrafo.vertices:
+    #     print(f"Vértice: Índice - {vertice.i} Rotulo - {vertice.r}")
+    # for aresta in subgrafo.arestas:
+    #     print(f"Aresta {aresta.v1} - {aresta.v2}")
+
+    # # 4.6 e)
+    # print('-=' * 20)
+    # arestas_s = {(grafo.encontrar_vertice_por_indice(0), grafo.encontrar_vertice_por_indice(1)),
+    #                 (grafo.encontrar_vertice_por_indice(3), grafo.encontrar_vertice_por_indice(4)),
+    #                 (grafo.encontrar_vertice_por_indice(0),grafo.encontrar_vertice_por_indice(2)),
+    #                 (grafo.encontrar_vertice_por_indice(2),grafo.encontrar_vertice_por_indice(3))}
+    # s_aresta = grafo.s_aresta(arestas_s)
+    # for vertice in s_aresta.vertices:
+    #     print(f"Vértice {vertice.r}")
+    # for aresta in s_aresta.arestas:
+    #     print(f"Aresta {aresta.v1} - {aresta.v2}")
+
+    # 4.6 f)
 
 main()
