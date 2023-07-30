@@ -149,44 +149,38 @@ class Grafo:
             if vertice.i == indice:
                 return vertice
         return None
+    
+    def existe_vertice(self, vertice):
+        return vertice in self.vertices
+    
     #Exercício 4.1  
     def subgrafo(self, vertices_subgrafo, arestas_s):
         n_Grafo = Grafo(1,8)
-
         # Adiciona os vértices do subgrafo ao novo grafo
         for vertice in vertices_subgrafo:
             n_Grafo.add_vertice(vertice.i, vertice.r)
-
         # Adiciona as arestas do subgrafo ao novo grafo
         for aresta in arestas_s:
-            v1, v2 = aresta.v1, aresta.v2
+            v1,v2 = aresta
             if self.existe_vertice(v1) and self.existe_vertice(v2):
-                n_Grafo.add_aresta(v1, v2)
-
+                n_Grafo.add_aresta(v1.i, v2.i)
         return n_Grafo
 
     # Exercício 4.2
     def s_induzido(self, vertices_subgrafo):
         n_Grafo = Grafo(1,8)
-
         # Adiciona os vértices do subgrafo ao novo grafo
         for vertice in vertices_subgrafo:
             n_Grafo.add_vertice(vertice.i, vertice.r)
-
         # Adiciona as arestas do subgrafo ao novo grafo
         for aresta in self.arestas:
             if aresta.v1 in vertices_subgrafo and aresta.v2 in vertices_subgrafo:
                 n_Grafo.add_aresta(aresta.v1.i, aresta.v2.i)
-
         return n_Grafo
-
-    def existe_vertice(self, vertice):
-        return vertice in self.vertices
     
     # Exercício 4.4
-    def sub_aresta(self, arestas_s):
+    def s_aresta(self, arestas_s):
         n_Grafo = Grafo(1,8)
-
         # Adiciona os vértices presentes nas arestas do subgrafo ao novo grafo
         # v_p -> vertices presentes; v1 e v2 -> vertice
         v_p = set()
@@ -194,67 +188,45 @@ class Grafo:
             v1, v2 = aresta
             v_p.add(v1)
             v_p.add(v2)
-
         for vertice in v_p:
             n_Grafo.add_vertice(vertice.i, vertice.r)
-
         # Adiciona as arestas do subgrafo ao novo grafo
         for aresta in arestas_s:
             v1, v2 = aresta
             if self.existe_vertice(v1) and self.existe_vertice(v2):
                 n_Grafo.add_aresta(v1.i, v2.i)
-
         return n_Grafo
 
 # Exercício 3.4 
 def main():
     grafo = Grafo(1, 8)
-
     # Adicionar vértices
     grafo.add_vertice(0, "a")
     grafo.add_vertice(1, "b")
     grafo.add_vertice(2, "c")
     grafo.add_vertice(3, "d")
-    grafo.add_vertice(4, "e")
-    grafo.add_vertice(5, "f")
-    grafo.add_vertice(6, "g")
-    grafo.add_vertice(7, "h")
 
     # Adicionar arestas
     grafo.add_aresta(0, 1)
-    grafo.add_aresta(0, 2)
-    grafo.add_aresta(0, 4)
-    grafo.add_aresta(0, 5)
-    grafo.add_aresta(1, 3)
-    grafo.add_aresta(1, 4)
-    grafo.add_aresta(2, 5)
-    grafo.add_aresta(2, 6)
-    grafo.add_aresta(2, 7)
-    grafo.add_aresta(5, 6)
-    grafo.add_aresta(5, 7)
-    grafo.add_aresta(6, 7)
+    grafo.add_aresta(1, 2)
+    grafo.add_aresta(2, 3)
+    grafo.add_aresta(3, 0)
 
     # 4.1
     vertices_subgrafo = {grafo.encontrar_vertice_por_indice(0), grafo.encontrar_vertice_por_indice(1), grafo.encontrar_vertice_por_indice(2)}
-    arestas_s = {grafo.arestas[0], grafo.arestas[1]}
-
+    arestas_s = {(grafo.encontrar_vertice_por_indice(0),grafo.encontrar_vertice_por_indice(1),grafo.encontrar_vertice_por_indice(1),grafo.encontrar_vertice_por_indice(2))}
     subgrafo = grafo.subgrafo(vertices_subgrafo, arestas_s)
-
     for vertice in subgrafo.vertices:
         print(f"Vértice {vertice.r}")
-
     for aresta in subgrafo.arestas:
         print(f"Aresta {aresta.v1.i} - {aresta.v2.i}")
 
     # 4.2
     print('-=' * 20)
     vertices_subgrafo = {grafo.encontrar_vertice_por_indice(0), grafo.encontrar_vertice_por_indice(1), grafo.encontrar_vertice_por_indice(2)}
-
     s_induzido = grafo.s_induzido(vertices_subgrafo)
-
     for vertice in s_induzido.vertices:
         print(f"Vértice {vertice.r}")
-
     for aresta in s_induzido.arestas:
         print(f"Aresta {aresta.v1.i} - {aresta.v2.i}")
 
@@ -262,13 +234,10 @@ def main():
     print('-=' * 20)
     arestas_s = {(grafo.encontrar_vertice_por_indice(0), grafo.encontrar_vertice_por_indice(1)),
                     (grafo.encontrar_vertice_por_indice(1), grafo.encontrar_vertice_por_indice(2))}
-
-    sub_aresta = grafo.sub_aresta(arestas_s)
-
-    for vertice in sub_aresta.vertices:
+    s_aresta = grafo.s_aresta(arestas_s)
+    for vertice in s_aresta.vertices:
         print(f"Vértice {vertice.r}")
-
-    for aresta in sub_aresta.arestas:
+    for aresta in s_aresta.arestas:
         print(f"Aresta {aresta.v1} - {aresta.v2}")
 
 main()
