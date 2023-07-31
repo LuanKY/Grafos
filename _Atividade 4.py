@@ -272,6 +272,22 @@ class Grafo:
         sub_grafo.imprimir_grafo()
 
         return sub_grafo
+        
+    def subgrafo_induzido(self, vertices_s):
+        sub_grafo = Grafo(1, len(vertices_s))
+
+        for v in vertices_s:
+            if not self.existe_vertice(v):
+                return None
+
+        for i, v in enumerate(vertices_s):
+            sub_grafo.add_vertice(i, v.r)
+
+        for a in self.arestas:
+            if a.v1 in vertices_s and a.v2 in vertices_s:
+                sub_grafo.add_aresta(vertices_s.index(a.v1), vertices_s.index(a.v2))
+
+        return sub_grafo
 
 
 def main():
@@ -302,6 +318,13 @@ def main():
     for vertice in sub_grafo.vertices:
         print(f"Vértice: Índice - {vertice.i} Rotulo - {vertice.r}")
     for aresta in sub_grafo.arestas:
+        print(f"Aresta ({aresta.v1}, {aresta.v2})")
+
+    print('-=' * 20)
+    induzido = grafo.subgrafo_induzido(vertices_s)
+    for vertice in induzido.vertices:
+        print(f"Vértice: Índice - {vertice.i} Rotulo - {vertice.r}")
+    for aresta in induzido.arestas:
         print(f"Aresta ({aresta.v1}, {aresta.v2})")
 
 main()
