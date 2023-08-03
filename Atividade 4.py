@@ -1,3 +1,5 @@
+import copy
+
 class Vertice:
     def __init__(self, i, r):
         # i -> indice | r -> rotulo
@@ -32,6 +34,35 @@ class Grafo:
         # i -> indice | r -> rotulo
         vertice = Vertice(i, r)
         self.vertices.append(vertice)
+
+    def remove_vertice(self, i_v):
+        # i_v -> indice do vertice
+        if ((i_v >= len(self.vertices) and i_v not in self.estrutura) or i_v < 0):
+            return print("Índice inválido. O índice do vértice não existe no grafo.")
+
+        arestas = []
+        for a in self.arestas:
+            if (not (a.v1 == i_v or a.v2 == i_v)):
+                arestas.append(a)
+        self.arestas = arestas
+
+        if i_v in self.estrutura:
+            adjacentes = self.estrutura[i_v]
+            for adj in adjacentes:
+                self.estrutura[adj].remove(i_v)
+            del self.estrutura[i_v]
+        
+        i = 0
+        while i < len(self.vertices):
+            v = self.vertices[i]
+            v.grau = 0
+            for a in self.arestas:
+                if (a.v1 == v.i or a.v2 == v.i):
+                    v.grau += 1     
+            if (v.i == i_v):
+                self.vertices.remove(v)
+                i -= 1
+            i += 1
 
     def add_aresta(self, i_v1, i_v2):
         # i_v1 e i_v2 -> indice do vertice
@@ -75,9 +106,13 @@ class Grafo:
 
         # a -> aresta
         arestas = []
+        removed = False
         for a in self.arestas:
-            if not ((a.v1 == i_v1 and a.v2 == i_v2) or (a.v1 == i_v2 and a.v2 == i_v1)):
-                arestas.append(a)
+            if (a.v1 == i_v1 and a.v2 == i_v2) or (a.v1 == i_v2 and a.v2 == i_v1):
+                if not removed:
+                    removed = True
+                    continue
+            arestas.append(a)
         self.arestas = arestas
 
         self.vertices[i_v1].grau -= 1
@@ -316,9 +351,38 @@ class Grafo:
                 sub_grafo.add_aresta(i_v1, i_v2)
 
         return sub_grafo
+    
+    # Exercício 4.3
+    def subtrair_vertices(self, vertices):
+        for v in vertices:
+            if (self.existe_vertice(v)):
+                self.remove_vertice(v.i)
+            else:
+                return print("Não é possivel remover um vertice que nao pertence ao grafo")
 
+    # Exercício 4.4
+    def subgrafo_aresta_induzido(self, arestas):
+        sub_grafo = Grafo(1, 0)
+        for a in arestas:
+            if ((a.v1 not in self.estrutura) or (a.v2 not in self.estrutura) or (a.v1 not in self.estrutura[a.v2]) or (a.v2 not in self.estrutura[a.v1])):
+                return print("Não é possivel criar um subgrafo aresta-induzido com arestas que nao pertencem ao grafo")
+            else:
+                if (a.v1 not in sub_grafo.estrutura):
+                    sub_grafo.add_vertice(a.v1, self.vertices[a.v1].r)
+                if (a.v2 not in sub_grafo.estrutura):
+                    sub_grafo.add_vertice(a.v2, self.vertices[a.v2].r)
+                sub_grafo.add_aresta(a.v1, a.v2)
         
-
+        return sub_grafo
+    
+    # Exercício 4.5
+    def subtrair_arestas(self, arestas):
+        for a in arestas:
+            if (self.verificar_vizinhos(a.v1, a.v2)):
+                self.remove_aresta(a.v1, a.v2)
+            else:
+                return print("Não é possivel remover uma aresta que nao pertence ao grafo")
+        
 def main():
     grafo = Grafo(1, 5)
     
@@ -328,14 +392,17 @@ def main():
     grafo.add_vertice(3, "x")
     grafo.add_vertice(4, "w")
 
-    grafo.add_aresta(0, 1)
-    grafo.add_aresta(0, 2)
-    grafo.add_aresta(1, 2)
-    grafo.add_aresta(1, 2)
-    grafo.add_aresta(1, 4)
-    grafo.add_aresta(2, 3)
-    grafo.add_aresta(2, 4)
-    grafo.add_aresta(3, 4)
+    grafo.add_aresta(0, 1) # aresta -> a
+    grafo.add_aresta(0, 2) # aresta -> e
+    grafo.add_aresta(1, 2) # aresta -> f
+    grafo.add_aresta(1, 2) # aresta -> g
+    grafo.add_aresta(2, 3) # aresta -> d
+    grafo.add_aresta(1, 4) # aresta -> b
+    grafo.add_aresta(2, 4) # aresta -> h
+    grafo.add_aresta(3, 4) # aresta -> c
+
+    grafo2 = copy.deepcopy(grafo) # Copia desvinculada do grafo original
+    grafo3 = copy.deepcopy(grafo) # Copia desvinculada do grafo original
 
     # Exercício 4.6 a)
     vertices_s = [Vertice(0, "u"), Vertice(1, "v"), 
@@ -346,10 +413,6 @@ def main():
     print('-=' * 20)
     print(f"{'Subgrafo Proprio':^40}")
     sub_grafo.imprimir_grafo()
-    # for vertice in sub_grafo.vertices:
-    #     print(f"Vértice: Índice - {vertice.i} Rotulo - {vertice.r}")
-    # for aresta in sub_grafo.arestas:
-    #     print(f"Aresta ({aresta.v1}, {aresta.v2})")
 
     # Exercício 4.6 b)
     sub_grafo_gerador = Grafo(1, 5)
@@ -370,16 +433,33 @@ def main():
     sub_grafo_gerador.imprimir_grafo()
 
     # Exercício 4.6 c)
-    vertices_i = [Vertice(0, "u"), Vertice(1, "v"), 
-                  Vertice(2, "y"), Vertice(4, "w")]
+    x1 = [Vertice(0, "u"), Vertice(1, "v"), 
+          Vertice(2, "y"), Vertice(4, "w")]
     
-    sub_grafo_induzido = grafo.subgrafo_induzido(vertices_i)
+    sub_grafo_induzido = grafo.subgrafo_induzido(x1)
     print('-=' * 20)
-    print(f"{'Subgrafo Induzido':^40}")
+    print(f"{'G[X1]':^40}")
     sub_grafo_induzido.imprimir_grafo()
-    # for vertice in sub_grafo_induzido.vertices:
-    #     print(f"Vértice: Índice - {vertice.i} Rotulo - {vertice.r}")
-    # for aresta in sub_grafo_induzido.arestas:
-    #     print(f"Aresta ({aresta.v1}, {aresta.v2})")
+
+    # Exercício 4.6 d)
+    x = [Vertice(0, "u"), Vertice(4, "w")]
+    grafo2.subtrair_vertices(x)
+    print('-=' * 20)
+    print(f"{'G - X':^40}")
+    grafo2.imprimir_grafo()
+
+    # Exercício 4.6 e)
+    e1 = [Aresta(0, 1), Aresta(0, 2), Aresta(1, 2), Aresta(3, 4)]
+    sub_grafo_a_i = grafo.subgrafo_aresta_induzido(e1)
+    print('-=' * 20)
+    print(f"{'G[E1]':^40}")
+    sub_grafo_a_i.imprimir_grafo()
+
+    # Exercício 4.6 f)
+    e2 = [Aresta(0, 1), Aresta(1, 4), Aresta(1, 2)]
+    grafo3.subtrair_arestas(e2)
+    print('-=' * 20)
+    print(f"{'G - E2':^40}")
+    grafo3.imprimir_grafo()
 
 main()
