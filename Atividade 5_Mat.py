@@ -62,6 +62,21 @@ class Passeio:
             print("Não é possivel criar uma secao com posicoes fora do intervalo [0, k-1]")
             return
     
+    # Exercício 5.8
+    def encontrar_ciclo_existente(self, grafo):
+        for v in grafo.vertices:
+            if grafo.calcular_grau(v.i) >= 2:
+                vizinhos = grafo.estrutura.get(v.i, [])
+                for u in vizinhos:
+                    if grafo.verificar_vizinhos(u, v.i):
+                        caminho = [v.r]  
+                        caminho.extend([x.r for x in grafo.vertices[grafo.vertices.index(v) + 1:]])
+                        caminho.append(v.r)  
+                        return caminho
+        return None
+    # Não tenho certeza absoluta se a logica esta seguindo o que foi pedido na questão sobre as proposições
+    # Falta imprimir a Aresta entre os vertices
+        
     # Exercício E2
     def encontrar_caminho_passeio(self, u, v, v_pass):
         if u not in v_pass or v not in v_pass:
@@ -539,32 +554,28 @@ def main():
     # p = grafo.encontrar_passeio(grafo.vertices[0], grafo.vertices[2])
     # p.imprimir_passeio()
 
-    # New
-    # ciclo = grafo.encontrar_ciclo()
+    #Outro erro - Quando comento a parte de imprimir passeio acima o código de encontrar ciclo abaixo funciona normalmente
+    # 5.7
+    ciclo = grafo.encontrar_ciclo()
 
-    # if ciclo:
-    #     print("O grafo possui um ciclo:")
-    #     for v1, v2 in ciclo:
-    #         v1_r = grafo.vertices[v1].r
-    #         v2_r = grafo.vertices[v2].r
-    #         print(f"({v1_r}) -- A({v1_r}, {v2_r})", end=" -> ")
-    #     print(f"({grafo.vertices[ciclo[0][0]].r})") 
-    # else:
-    #     print("O grafo não possui ciclo")
+    if ciclo:
+        print("O grafo possui um ciclo:")
+        for v1, v2 in ciclo:
+            v1_r = grafo.vertices[v1].r
+            v2_r = grafo.vertices[v2].r
+            print(f"({v1_r}) -- A({v1_r}, {v2_r})", end=" -> ")
+        print(f"({grafo.vertices[ciclo[0][0]].r})") 
+    else:
+        print("O grafo não possui ciclo")
     
-    # # E2
-    # passeio_gerado = passeio.gerar_passeio(grafo, grafo.vertices[0], grafo.vertices[2])
+    # 5.8
+    ciclo_existente = passeio.encontrar_ciclo_existente(grafo)
+    if ciclo_existente:
+        print("Ciclo existente:", ciclo_existente)
+    else:
+        print("O passeio não contém um ciclo existente.")
 
-    # if passeio_gerado:
-    #     print("Passeio gerado:")
-    #     for i, (vertice, aresta) in enumerate(passeio_gerado):
-    #         if i > 0:
-    #             print(" -- A({}, {}) -> ".format(passeio_gerado[i - 1][0].r, vertice.r), end="")
-    #         print(vertice.r, end="")
-    #     print()
-    # else:
-    #     print("Não foi possível gerar um passeio."
-    
+    # E2
     u = passeio.vertices[0]  # Vertice inicial
     v = passeio.vertices[2]  # Vertice final
     v_pass = passeio.vertices
