@@ -94,16 +94,6 @@ class Passeio:
     
     # Exercício 5.12
     def grafo_conexo(self, grafo):
-        # Teste 1
-        # init = grafo.vertices[0].i
-        # grafo.busca_em_profundidade(init)
-        # for v in grafo.vertices:
-        #     if(v.prof_ent == None or v.prof_sai == None):
-        #         return False
-        #     else: 
-        #         return True
-
-        # Teste 2 - Só funciona para grafo simples
         return grafo.verificar_grafo_simples_e_conexo() 
     
     # Exercício 5.11
