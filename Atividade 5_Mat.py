@@ -91,7 +91,27 @@ class Passeio:
         cam_uv = v_pass[ind_u:ind_v + 1]
         aresta_uv = [(cam_uv[i], cam_uv[i+1]) for i in range(len(cam_uv)-1)]
         return cam_uv, aresta_uv
+    
+    # Exercício 5.12
+    def grafo_conexo(self, grafo):
+        # Teste 1
+        # init = grafo.vertices[0].i
+        # grafo.busca_em_profundidade(init)
+        # for v in grafo.vertices:
+        #     if(v.prof_ent == None or v.prof_sai == None):
+        #         return False
+        #     else: 
+        #         return True
 
+        # Teste 2 - Só funciona para grafo simples
+        return grafo.verificar_grafo_simples_e_conexo() 
+    
+    # Exercício 5.11
+    def contem_circuitos(self, grafo):
+        if(self.grafo_conexo(grafo)):
+            if(len(grafo.vertices) == len(grafo.arestas) - 1):
+                return False
+        return True
 
 
 
@@ -522,6 +542,8 @@ class Grafo:
         return None
 
 
+
+
 def main():
     grafo = Grafo(1, 5)
     grafo.add_vertice(0, "V1")
@@ -529,6 +551,8 @@ def main():
     grafo.add_vertice(2, "V3")
     grafo.add_vertice(3, "V4")
     grafo.add_vertice(4, "V5")
+    # grafo.add_vertice(5, "V6")
+    # grafo.add_vertice(6, "V7")
     grafo.add_aresta(0, 1)
     grafo.add_aresta(0, 4)
     grafo.add_aresta(4, 1)
@@ -547,14 +571,14 @@ def main():
     passeio.add_vertice(grafo.vertices[4])
     passeio.add_vertice(grafo.vertices[1])
 
-    passeio.imprimir_passeio()
-    passeio.imprimir_passeio_reverso()
+    # passeio.imprimir_passeio()
+    # passeio.imprimir_passeio_reverso()
 
-    secao = passeio.secao(1, 3)
-    print(secao)
+    # secao = passeio.secao(1, 3)
+    # print(secao)
 
-    p = grafo.encontrar_passeio(grafo.vertices[0], grafo.vertices[2])
-    p.imprimir_passeio()
+    # p = grafo.encontrar_passeio(grafo.vertices[0], grafo.vertices[2])
+    # p.imprimir_passeio()
 
     #Outro erro - Quando comento a parte de imprimir passeio acima o código de encontrar ciclo abaixo funciona normalmente
     # 5.7
@@ -594,5 +618,18 @@ def main():
         print()
     else:
         print("Não foi possível encontrar um caminho entre {} e {}.".format(u.r, v.r))
+
+    # 5.12
+    conexo = passeio.grafo_conexo(grafo)
+    if conexo:
+        print("O grafo é conexo.")
+    else: 
+        print("O grafo é desconexo.")
+
+    # 5.11
+    circuito = passeio.contem_circuitos(grafo)
+    if circuito:
+        print("O grafo contém circuito")
+    else: print("O grafo não contém circuito")
 
 main()
