@@ -497,6 +497,8 @@ class Grafo:
     def encontrar_ciclo(self):
         visitado = set()
         for v in self.vertices:
+            v.prof_ent = None
+        for v in self.vertices:
             if not v.prof_ent:
                 ciclo = self.busca_em_profundidade_ciclo(v.i, visitado, [])
                 if ciclo:
@@ -545,14 +547,14 @@ def main():
     passeio.add_vertice(grafo.vertices[4])
     passeio.add_vertice(grafo.vertices[1])
 
-    # passeio.imprimir_passeio()
-    # passeio.imprimir_passeio_reverso()
+    passeio.imprimir_passeio()
+    passeio.imprimir_passeio_reverso()
 
-    # secao = passeio.secao(1, 3)
-    # print(secao)
+    secao = passeio.secao(1, 3)
+    print(secao)
 
-    # p = grafo.encontrar_passeio(grafo.vertices[0], grafo.vertices[2])
-    # p.imprimir_passeio()
+    p = grafo.encontrar_passeio(grafo.vertices[0], grafo.vertices[2])
+    p.imprimir_passeio()
 
     #Outro erro - Quando comento a parte de imprimir passeio acima o código de encontrar ciclo abaixo funciona normalmente
     # 5.7
