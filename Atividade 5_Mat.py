@@ -74,10 +74,21 @@ class Passeio:
                         caminho.append(v.r)  
                         return caminho
         return None
-    # Não tenho certeza absoluta se a logica esta seguindo o que foi pedido na questão sobre as proposições
-    # Falta imprimir a Aresta entre os vertices
         
     # Exercício E2
+    # def encontrar_caminho_passeio(self, u, v, v_pass):
+    #     if u not in v_pass or v not in v_pass:
+    #         return None, None  # Pelo menos um dos vértices não pertence ao passeio
+
+    #     ind_u = v_pass.index(u)
+    #     ind_v = v_pass.index(v)
+
+    #     if ind_u > ind_v:
+    #         ind_u, ind_v = ind_v, ind_u
+
+    #     cam_uv = v_pass[ind_u:ind_v + 1]
+    #     aresta_uv = [(cam_uv[i], cam_uv[i+1]) for i in range(len(cam_uv)-1)]
+    #     return cam_uv, aresta_uv
     def encontrar_caminho_passeio(self, u, v, v_pass):
         if u not in v_pass or v not in v_pass:
             return None, None  # Pelo menos um dos vértices não pertence ao passeio
@@ -102,6 +113,36 @@ class Passeio:
             if(len(grafo.vertices) == len(grafo.arestas) - 1):
                 return False
         return True
+    
+    # Exercício E1
+    def encontrar_ciclo_aresta(self, trilha, a):
+        vertice_cop = trilha.vertices.copy()
+        u = a.v1
+        v = a.v2
+        a_rem = None
+
+        for a in vertice_cop:
+            if (a.i == u or a.i == v):
+                a_rem = a
+        if a_rem:
+            vertice_cop.remove(a_rem)
+
+        caminho, arestas = self.encontrar_caminho_passeio(u, v, vertice_cop)
+
+        if caminho is None:
+            print("Não foi possível encontrar um caminho entre os vértices da aresta na trilha.")
+            return None
+
+        ciclo = Passeio()
+        for v in vertice_cop:
+            ciclo.add_vertice(v)
+
+        for i in range(len(caminho) - 1):
+            ciclo.add_aresta(caminho[i].i, caminho[i+1].i)
+
+        ciclo.add_aresta(u, v)
+
+        return ciclo
 
 
 
@@ -541,7 +582,7 @@ def main():
     grafo.add_vertice(2, "V3")
     grafo.add_vertice(3, "V4")
     grafo.add_vertice(4, "V5")
-    # grafo.add_vertice(5, "V6")
+    # grafo.add_vertice(5, "V6") 
     # grafo.add_vertice(6, "V7")
     grafo.add_aresta(0, 1)
     grafo.add_aresta(0, 4)
@@ -561,16 +602,15 @@ def main():
     passeio.add_vertice(grafo.vertices[4])
     passeio.add_vertice(grafo.vertices[1])
 
-    # passeio.imprimir_passeio()
-    # passeio.imprimir_passeio_reverso()
+    passeio.imprimir_passeio()
+    passeio.imprimir_passeio_reverso()
 
-    # secao = passeio.secao(1, 3)
-    # print(secao)
+    secao = passeio.secao(1, 3)
+    print(secao)
 
-    # p = grafo.encontrar_passeio(grafo.vertices[0], grafo.vertices[2])
-    # p.imprimir_passeio()
+    p = grafo.encontrar_passeio(grafo.vertices[0], grafo.vertices[2])
+    p.imprimir_passeio()
 
-    #Outro erro - Quando comento a parte de imprimir passeio acima o código de encontrar ciclo abaixo funciona normalmente
     # 5.7
     ciclo = grafo.encontrar_ciclo()
 
@@ -621,5 +661,19 @@ def main():
     if circuito:
         print("O grafo contém circuito")
     else: print("O grafo não contém circuito")
+
+    # E1
+    a = Aresta(0, 4)
+    trilha = Passeio()
+    trilha.add_vertice(grafo.vertices[0])
+    trilha.add_vertice(grafo.vertices[1])
+    trilha.add_vertice(grafo.vertices[2])
+    trilha.add_vertice(grafo.vertices[3])
+    trilha.add_vertice(grafo.vertices[4])
+
+    ciclo = trilha.encontrar_ciclo_aresta(trilha, a)
+    if ciclo:
+        print("Ciclo resultante após remover a aresta da trilha:")
+        ciclo.imprimir_passeio()
 
 main()
