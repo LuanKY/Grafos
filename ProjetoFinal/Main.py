@@ -48,7 +48,7 @@ def imprimir_resultado(caminho, dist):
     print(f'Caminho: {" -> ".join(caminho)}')
     print(f'Distância total: {dist} Km')
 
-# Criando o grafo para Sergipe
+# Grafo Sergipe
 sergipe = Grafo()
 
 cidades = ['Aracaju', 'Itabaiana', 'Lagarto', 'Estância', 'Propriá']
