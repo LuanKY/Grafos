@@ -1,0 +1,27 @@
+Rio Branco -> Sena Madureira || Xapuri || Bujari || Porto Acre || Senador Guiomard || Capixaba
+
+Cruzeiro do Sul -> Rodrigues Alves || Porto Walter || Tarauacá
+
+Tarauacá -> Feijó || Jordão || Marechal Thaumaturgo || Porto Walter
+
+Brasiléia -> Sena Madureira || Epitaciolândia || Xapuri || Rio Branco
+
+Senador Guiomard -> Porto Acre || Acrelândia || Plácido de Castro || Capixaba
+
+Mâncio Lima -> Rodrigues Alves || Cruzeiro do Sul
+
+Xapuri -> Epitaciolândia || Capixaba
+
+Marechal Thaumaturgo -> Porto Walter
+
+Plácido de Castro -> Acrelândia || Capixaba
+
+Bujari -> Sena Madureira || Porto Acre
+
+Manoel Urbano -> Feijó || Sena Madureira
+
+Jordão -> Feijó || Marechal Thaumaturgo
+
+Assis Brasil -> Sena Madureira || Brasiléia
+
+Santa Rosa do Purus -> Feijó || Manoel Urbano
