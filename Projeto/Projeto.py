@@ -1,143 +1,150 @@
-class Vertice:
-    def __init__(self, i, r):
-        self.i = i
-        self.r = r
-
-class Aresta:
-    def __init__(self, v1, v2):
-        self.v1 = v1
-        self.v2 = v2
-
-class Grafo:
-    def __init__(self):
-        self.vertices = []
-        self.arestas = []
-        self.estrutura = {}
-
-    def add_vertice(self, i, r):
-        vertice = Vertice(i, r)
-        self.vertices.append(vertice)
-
-    def add_aresta(self, i_v1, i_v2):
-        if i_v1 not in self.estrutura:
-            self.estrutura[i_v1] = []
-        if i_v2 not in self.estrutura:
-            self.estrutura[i_v2] = []
-
-        self.estrutura[i_v1].append(i_v2)
-        self.estrutura[i_v2].append(i_v1)
-        
-
-        aresta = Aresta(i_v1, i_v2)
-        self.arestas.append(aresta)
-
-    def imprimir_grafo(self):
-        self.estrutura = dict(sorted(self.estrutura.items()))
-        # r -> rotulo | adj -> adjacência
-        print('-=' * 50)
-        for i in self.estrutura:
-            r = self.vertices[i].r
-            adj_r = []
-            for v in self.estrutura[i]:
-                if self.vertices[v].r not in adj_r:
-                    adj_r.append(self.vertices[v].r)
-            print(f"{r}: {adj_r}")
-            print()
-        print('-=' * 50)
-
-def municipiosSergipe():
-    grafo = Grafo()
-
+class Grafo: 
+    def __init__(self): 
+        self.vertices = set() 
+        self.arestas = {} 
+  
+    def adicionar_vertice(self, vertice): 
+        self.vertices.add(vertice) 
+        self.arestas[vertice] = [] 
+  
+    def adicionar_aresta(self, origem, destino, comprimento): 
+        self.arestas[origem].append((destino, comprimento)) 
+        self.arestas[destino].append((origem, comprimento)) 
+  
+    def obter_vizinhos(self, vertice): 
+        return self.arestas[vertice] 
+  
+  
+def dijkstra(grafo, origem): 
+    distancias = {v: float('infinity') for v in grafo.vertices} #Crio um dicionario com vertice como chave que define a distancia entre todos vertices menos o inicial como infinita
+    predecessores = {v: None for v in grafo.vertices} #Crio outro dicionario para armazenar os vertices predecessores 
+    distancias[origem] = 0 
+    nos_nao_visitados = set(grafo.vertices) 
+  
+    while nos_nao_visitados: 
+        no_atual = min(nos_nao_visitados, key=lambda v: distancias[v]) # Busco o vertice não visitado com a menor distancia
+        nos_nao_visitados.remove(no_atual) #Marco e remove este vertice
+  
+        for vizinho, comprimento in grafo.obter_vizinhos(no_atual): 
+            nova_distancia = distancias[no_atual] + comprimento #Calculo a distancia ate o vizinho
+            if nova_distancia < distancias[vizinho]: #Verifico se o caminho passando pelo vertice atual é menor que o do vizinho
+                #Se essa distância estimada for menor do que a distância atual atualizo a distância
+                distancias[vizinho] = nova_distancia 
+                predecessores[vizinho] = no_atual 
+  
+    return distancias, predecessores 
+  
+def encontrar_menor_caminho(grafo, origem, destino): 
+    distancias, predecessores = dijkstra(grafo, origem) 
+  
+    caminho = [destino] #Crio um array chamado caminho que armazena o caminho do grafo. OBS: A distancia será encontrada de trás pra frente
+    atual = destino # Variável usada pra encontrar o caminho
+    while predecessores[atual] is not None: #Rodo um loop enquanto o vertice anterior a o atual não for nulo
+        caminho.insert(0, predecessores[atual]) # insiro o predecessor no meu array
+        atual = predecessores[atual] 
+  
+    return caminho, distancias[destino] 
+  
+def imprimir_resultado(caminho, distancia): 
+    # Imprime o caminho e a distância total.
+    print(f'Caminho: {" -> ".join(caminho)}') 
+    print(f'Distância total: {distancia} Km') 
+  
+def sergipe():
+    grafo = Grafo() 
+    
     municipios = [
-        "AQUIDABA", "ARACAJU", "ARAUA", "AREIA BRANCA", "BARRA DOS COQUEIROS",
-        "BOQUIM", "BREJO GRANDE", "CAMPO DO BRITO", "CANHOBA", "CANINDE DE SAO FRANCISCO",
-        "CAPELA", "CARIRA", "CEDRO DE SAO JOAO", "CRISTINAPOLIS", "CUMBE",
-        "DIVINA PASTORA", "ESTANCIA", "FEIRA NOVA", "FREI PAULO", "GARARU",
-        "GRACHO CARDOSO", "ILHA DAS FLORES", "INDIAROBA", "ITABAIANA", "ITABAIANINHA",
-        "ITABI", "ITAPORANGA D'AJUDA", "JAPARATUBA", "JAPOATA", "LAGARTO", "LARANJEIRAS",
-        "MACAMBIRA", "MALHADOR", "MARUIM", "MOITA BONITA", "MONTE ALEGRE DE SERGIPE",
-        "MURIBECA", "NEOPOLIS", "NOSSA SENHORA APARECIDA", "NOSSA SENHORA DA GLORIA",
-        "NOSSA SENHORA DAS DORES", "NOSSA SENHORA DE LOURDES", "NOSSA SENHORA DO SOCORRO",
-        "PACATUBA", "PEDRA MOLE", "PEDRINHAS", "PINHAO", "PIRAMBU", "POCO REDONDO",
-        "POCO VERDE", "PORTO DA FOLHA", "PROPRIA", "RIACHAO DO DANTAS", "RIACHUELO",
-        "RIBEIROPOLIS", "ROSARIO DO CATETE", "SALGADO", "SANTA LUZIA DO ITANHY",
-        "SANTANA DO SAO FRANCISCO", "SANTO AMARO DAS BROTAS", "SAO CRISTOVAO", "SAO FRANCISCO",
-        "SAO MIGUEL DO ALEIXO", "SIMAO DIAS", "SIRIRI", "TELHA", "TOBIAS BARRETO",
-        "TOMAR DO GERU", "UMBAUBA"
+        "Aquidaba", "Aracaju", "Araua", "Areia Branca", "Barra Dos Coqueiros",
+        "Boquim", "Brejo Grande", "Campo Do Brito", "Canhoba", "Caninde De Sao Francisco",
+        "Capela", "Carira", "Cedro De Sao Joao", "Cristinapolis", "Cumbe",
+        "Divina Pastora", "Estancia", "Feira Nova", "Frei Paulo", "Gararu",
+        "Gracho Cardoso", "Ilha Das Flores", "Indiaroba", "Itabaiana", "Itabaianinha",
+        "Itabi", "Itaporanga D'Ajuda", "Japaratuba", "Japoata", "Lagarto", "Laranjeiras",
+        "Macambira", "Malhador", "Maruim", "Moita Bonita", "Monte Alegre De Sergipe",
+        "Muribeca", "Neopolis", "Nossa Senhora Aparecida", "Nossa Senhora Da Gloria",
+        "Nossa Senhora Das Dores", "Nossa Senhora De Lourdes", "Nossa Senhora Do Socorro",
+        "Pacatuba", "Pedra Mole", "Pedrinhas", "Pinhao", "Pirambu", "Poco Redondo",
+        "Poco Verde", "Porto Da Folha", "Propria", "Riachao Do Dantas", "Riachuelo",
+        "Ribeiropolis", "Rosario Do Catete", "Salgado", "Santa Luzia Do Itanhy",
+        "Santana Do Sao Francisco", "Santo Amaro Das Brotas", "Sao Cristovao", "Sao Francisco",
+        "Sao Miguel Do Aleixo", "Simao Dias", "Siriri", "Telha", "Tobias Barreto",
+        "Tomar Do Geru", "Umbauba"
     ]
-
-    for i, municipio in enumerate(municipios):
-        grafo.add_vertice(i, municipio)
-
+    for municipio in municipios: 
+        grafo.adicionar_vertice(municipio) 
+    
     fronteira = [
-        ("AQUIDABA", ["MURIBECA", "CANHOBA"]),
-        ("ARAUA", ["ITABAIANINHA", "ESTANCIA"]),
-        ("AREIA BRANCA", ["LARANJEIRAS", "RIACHUELO", "MALHADOR", "ITABAIANA"]),
-        ("BARRA DOS COQUEIROS", ["PIRAMBU", "ARACAJU"]),
-        ("BOQUIM", ["PEDRINHAS", "SALGADO", "LAGARTO", "ARAUA", "ITABAIANINHA"]),
-        ("BREJO GRANDE", ["PACATUBA"]),
-        ("CAMPO DO BRITO", ["LAGARTO", "MACAMBIRA", "ITABAIANA"]),
-        ("CANINDE DE SAO FRANCISCO", ["POCO REDONDO"]),
-        ("CAPELA", ["SIRIRI", "AQUIDABA", "MURIBECA", "JAPARATUBA"]),
-        ("CEDRO DE SAO JOAO", ["TELHA", "PROPRIA", "SAO FRANCISCO", "AQUIDABA"]),
-        ("CRISTINAPOLIS", ["ITABAIANINHA", "UMBAUBA", "TOMAR DO GERU"]),
-        ("CUMBE", ["FEIRA NOVA", "AQUIDABA", "CAPELA"]),
-        ("DIVINA PASTORA", ["MARUIM", "RIACHUELO", "SIRIRI"]),
-        ("FREI PAULO", ["RIBEIROPOLIS", "CARIRA"]),
-        ("GARARU", ["PORTO DA FOLHA"]),
-        ("GRACHO CARDOSO", ["FEIRA NOVA", "CUMBE", "AQUIDABA", "ITABI", "GARARU"]),
-        ("ILHA DAS FLORES", ["BREJO GRANDE", "PACATUBA", "NEOPOLIS"]),
-        ("INDIAROBA", ["CRISTINAPOLIS", "UMBAUBA", "SANTA LUZIA DO ITANHY", "ESTANCIA"]),
-        ("ITABAIANA", ["MALHADOR", "RIBEIROPOLIS", "FREI PAULO"]),
-        ("ITABI", ["GARARU", "CANHOBA"]),
-        ("ITAPORANGA D'AJUDA", ["SALGADO", "ESTANCIA", "ARACAJU", "SAO CRISTOVAO", "AREIA BRANCA", "CAMPO DO BRITO", "LAGARTO"]),
-        ("JAPARATUBA", ["PIRAMBU", "MURIBECA"]),
-        ("JAPOATA", ["NEOPOLIS", "PROPRIA", "PIRAMBU", "JAPARATUBA"]),
-        ("MACAMBIRA", ["PEDRA MOLE", "LAGARTO", "FREI PAULO", "ITABAIANA"]),
-        ("MARUIM", ["LARANJEIRAS"]),
-        ("MOITA BONITA", ["RIACHUELO", "MALHADOR", "ITABAIANA", "RIBEIROPOLIS"]),
-        ("MONTE ALEGRE DE SERGIPE", ["NOSSA SENHORA DA GLORIA"]),
-        ("NEOPOLIS", ["PROPRIA"]),
-        ("NOSSA SENHORA APARECIDA", ["CARIRA", "FREI PAULO", "RIBEIROPOLIS", "SAO MIGUEL DO ALEIXO"]),
-        ("NOSSA SENHORA DA GLORIA", ["CARIRA", "NOSSA SENHORA APARECIDA", "SAO MIGUEL DO ALEIXO", "FEIRA NOVA", "GRACHO CARDOSO", "GARARU"]),
-        ("NOSSA SENHORA DAS DORES", ["CUMBE", "CAPELA", "SIRIRI", "DIVINA PASTORA", "RIACHUELO", "MOITA BONITA", "RIBEIROPOLIS", "SAO MIGUEL DO ALEIXO", "FEIRA NOVA"]),
-        ("NOSSA SENHORA DE LOURDES", ["GARARU", "ITABI", "CANHOBA"]),
-        ("NOSSA SENHORA DO SOCORRO", ["SAO CRISTOVAO", "ARACAJU", "SANTO AMARO DAS BROTAS", "LARANJEIRAS"]),
-        ("PACATUBA", ["PIRAMBU", "JAPOATA", "NEOPOLIS"]),
-        ("PEDRA MOLE", ["PINHAO", "LAGARTO", "FREI PAULO"]),
-        ("PEDRINHAS", ["ITABAIANINHA", "ARAUA"]),
-        ("PINHAO", ["FREI PAULO", "CARIRA"]),
-        ("POCO REDONDO", ["PORTO DA FOLHA", "MONTE ALEGRE DE SERGIPE"]),
-        ("POCO VERDE", ["SIMAO DIAS"]),
-        ("PORTO DA FOLHA", ["MONTE ALEGRE DE SERGIPE", "GARARU"]),
-        ("RIACHAO DO DANTAS", ["LAGARTO", "BOQUIM", "ITABAIANINHA"]),
-        ("RIACHUELO", ["MALHADOR", "LARANJEIRAS"]),
-        ("ROSARIO DO CATETE", ["MARUIM", "DIVINA PASTORA", "SIRIRI", "CAPELA", "PIRAMBU"]),
-        ("SALGADO", ["LAGARTO", "ESTANCIA"]),
-        ("SANTA LUZIA DO ITANHY", ["ITABAIANINHA", "ARAUA", "ESTANCIA"]),
-        ("SANTANA DO SAO FRANCISCO", ["NEOPOLIS"]),
-        ("SANTO AMARO DAS BROTAS", ["LARANJEIRAS", "MARUIM", "ROSARIO DO CATETE", "PIRAMBU", "BARRA DOS COQUEIROS"]),
-        ("SAO CRISTOVAO", ["ARACAJU"]),
-        ("SAO FRANCISCO", ["MURIBECA", "JAPOATA", "PROPRIA"]),
-        ("SAO MIGUEL DO ALEIXO", ["FEIRA NOVA", "RIBEIROPOLIS"]),
-        ("SIMAO DIAS", ["LAGARTO", "RIACHAO DO DANTAS", "PEDRA MOLE", "PINHAO"]),
-        ("TELHA", ["CANHOBA", "PROPRIA"]),
-        ("TOBIAS BARRETO", ["ITABAIANINHA", "RIACHAO DO DANTAS", "SIMAO DIAS", "POCO VERDE"]),
-        ("TOMAR DO GERU", ["TOBIAS BARRETO", "ITABAIANINHA"]),
-        ("UMBAUBA", ["ITABAIANINHA", "SANTA LUZIA DO ITANHY"])
+        ("Aquidaba", [("Muribeca", 0), ("Canhoba", 0)]),
+        ("Araua", [("Itabaianinha", 0), ("Estancia", 0)]),
+        ("Areia Branca", [("Laranjeiras", 0), ("Riachuelo", 0), ("Malhador", 0), ("Itabaiana", 0)]),
+        ("Barra Dos Coqueiros", [("Pirambu", 0), ("Aracaju", 0)]),
+        ("Boquim", [("Pedrinhas", 0), ("Salgado", 0), ("Lagarto", 0), ("Araua", 0), ("Itabaianinha", 0)]),
+        ("Brejo Grande", [("Pacatuba", 0)]),
+        ("Campo Do Brito", [("Lagarto", 0), ("Macambira", 0), ("Itabaiana", 0)]),
+        ("Caninde De Sao Francisco", [("Poco Redondo", 0)]),
+        ("Capela", [("Siriri", 0), ("Aquidaba", 0), ("Muribeca", 0), ("Japaratuba", 0)]),
+        ("Cedro De Sao Joao", [("Telha", 0), ("Propria", 0), ("Sao Francisco", 0), ("Aquidaba", 0)]),
+        ("Cristinapolis", [("Itabaianinha", 0), ("Umbauba", 0), ("Tomar Do Geru", 0)]),
+        ("Cumbe", [("Feira Nova", 0), ("Aquidaba", 0), ("Capela", 0)]),
+        ("Divina Pastora", [("Maruim", 0), ("Riachuelo", 0), ("Siriri", 0)]),
+        ("Frei Paulo", [("Ribeiropolis", 0), ("Carira", 0)]),
+        ("Gararu", [("Porto Da Folha", 0)]),
+        ("Gracho Cardoso", [("Feira Nova", 0), ("Cumbe", 0), ("Aquidaba", 0), ("Itabi", 0), ("Gararu", 0)]),
+        ("Ilha Das Flores", [("Brejo Grande", 0), ("Pacatuba", 0), ("Neopolis", 0)]),
+        ("Indiaroba", [("Cristinapolis", 0), ("Umbauba", 0), ("Santa Luzia Do Itanhy", 0), ("Estancia", 0)]),
+        ("Itabaiana", [("Malhador", 0), ("Ribeiropolis", 0), ("Frei Paulo", 0)]),
+        ("Itabi", [("Gararu", 0), ("Canhoba", 0)]),
+        ("Itaporanga D'Ajuda", [("Salgado", 0), ("Estancia", 0), ("Aracaju", 0), ("Sao Cristovao", 0), ("Areia Branca", 0), ("Campo Do Brito", 0), ("Lagarto", 0)]),
+        ("Japaratuba", [("Pirambu", 0), ("Muribeca", 0)]),
+        ("Japoata", [("Neopolis", 0), ("Propria", 0), ("Pirambu", 0), ("Japaratuba", 0)]),
+        ("Macambira", [("Pedra Mole", 0), ("Lagarto", 0), ("Frei Paulo", 0), ("Itabaiana", 0)]),
+        ("Maruim", [("Laranjeiras", 0)]),
+        ("Moita Bonita", [("Riachuelo", 0), ("Malhador", 0), ("Itabaiana", 0), ("Ribeiropolis", 0)]),
+        ("Monte Alegre De Sergipe", [("Nossa Senhora Da Gloria", 0)]),
+        ("Neopolis", [("Propria", 0)]),
+        ("Nossa Senhora Aparecida", [("Carira", 0), ("Frei Paulo", 0), ("Ribeiropolis", 0), ("Sao Miguel Do Aleixo", 0)]),
+        ("Nossa Senhora Da Gloria", [("Carira", 0), ("Nossa Senhora Aparecida", 0), ("Sao Miguel Do Aleixo", 0), ("Feira Nova", 0), ("Gracho Cardoso", 0), ("Gararu", 0)]),
+        ("Nossa Senhora Das Dores", [("Cumbe", 0), ("Capela", 0), ("Siriri", 0), ("Divina Pastora", 0), ("Riachuelo", 0), ("Moita Bonita", 0), ("Ribeiropolis", 0), ("Sao Miguel Do Aleixo", 0), ("Feira Nova", 0)]),
+        ("Nossa Senhora De Lourdes", [("Gararu", 0), ("Itabi", 0), ("Canhoba", 0)]),
+        ("Nossa Senhora Do Socorro", [("Sao Cristovao", 0), ("Aracaju", 0), ("Santo Amaro Das Brotas", 0), ("Laranjeiras", 0)]),
+        ("Pacatuba", [("Pirambu", 0), ("Japaratuba", 0), ("Neopolis", 0)]),
+        ("Pedra Mole", [("Pinhao", 0), ("Lagarto", 0), ("Frei Paulo", 0)]),
+        ("Pedrinhas", [("Itabaianinha", 0), ("Araua", 0)]),
+        ("Pinhao", [("Frei Paulo", 0), ("Carira", 0)]),
+        ("Poco Redondo", [("Porto Da Folha", 0), ("Monte Alegre De Sergipe", 0)]),
+        ("Poco Verde", [("Simao Dias", 0)]),
+        ("Porto Da Folha", [("Monte Alegre De Sergipe", 0), ("Gararu", 0)]),
+        ("Riachao Do Dantas", [("Lagarto", 0), ("Boquim", 0), ("Itabaianinha", 0)]),
+        ("Riachuelo", [("Malhador", 0), ("Laranjeiras", 0)]),
+        ("Rosario Do Catete", [("Maruim", 0), ("Divina Pastora", 0), ("Siriri", 0), ("Capela", 0), ("Pirambu", 0)]),
+        ("Salgado", [("Lagarto", 0), ("Estancia", 0)]),
+        ("Santa Luzia Do Itanhy", [("Itabaianinha", 0), ("Araua", 0), ("Estancia", 0)]),
+        ("Santana Do Sao Francisco", [("Neopolis", 0)]),
+        ("Santo Amaro Das Brotas", [("Laranjeiras", 0), ("Maruim", 0), ("Rosario Do Catete", 0), ("Pirambu", 0), ("Barra Dos Coqueiros", 0)]),
+        ("Sao Cristovao", [("Aracaju", 0)]),
+        ("Sao Francisco", [("Muribeca", 0), ("Japoata", 0), ("Propria", 0)]),
+        ("Sao Miguel Do Aleixo", [("Feira Nova", 0), ("Ribeiropolis", 0)]),
+        ("Simao Dias", [("Lagarto", 0), ("Riachao Do Dantas", 0), ("Pedra Mole", 0), ("Pinhao", 0)]),
+        ("Telha", [("Canhoba", 0), ("Propria", 0)]),
+        ("Tobias Barreto", [("Itabaianinha", 0), ("Riachao Do Dantas", 0), ("Simao Dias", 0), ("Poco Verde", 0)]),
+        ("Tomar Do Geru", [("Tobias Barreto", 0), ("Itabaianinha", 0)]),
+        ("Umbauba", [("Itabaianinha", 0), ("Santa Luzia Do Itanhy", 0)]),
     ]
 
     for v1, vizinhos in fronteira:
-        for v2 in vizinhos:
-            i_v1 = municipios.index(v1)
-            i_v2 = municipios.index(v2)
-            grafo.add_aresta(i_v1, i_v2)
+        for v2, comprimento in vizinhos:
+            grafo.adicionar_aresta(v1, v2, comprimento)
 
-    grafo.imprimir_grafo()
+    origem = 'Aracaju' 
+    destino = 'Propria' 
+    
+    melhor_caminho, distancia_total = encontrar_menor_caminho(grafo, origem, destino) 
+    imprimir_resultado(melhor_caminho, distancia_total)
+    print(grafo.arestas)
 
-def municipiosAcre():
-    grafo = Grafo()
-
+def acre():
+    grafo = Grafo() 
+    
     municipios = [
         "Rio Branco", "Cruzeiro do Sul", "Tarauaca", "Brasileia", "Senador Guiomard",
         "Mancio Lima", "Xapuri", "Marechal Thaumaturgo", "Placido de Castro", "Bujari",
@@ -145,33 +152,36 @@ def municipiosAcre():
         "Porto Acre", "Acrelandia", "Rodrigues Alves", "Feijo", "Porto Walter",
         "Sena Madureira", "Capixaba"
     ]
-
-    for i, municipio in enumerate(municipios):
-        grafo.add_vertice(i, municipio)
-
+    for municipio in municipios: 
+        grafo.adicionar_vertice(municipio) 
+    
     fronteira = [
-        ("Rio Branco", ["Sena Madureira", "Xapuri", "Bujari", "Porto Acre", "Senador Guiomard", "Capixaba"]),
-        ("Cruzeiro do Sul", ["Rodrigues Alves", "Porto Walter", "Tarauaca"]),
-        ("Tarauaca", ["Feijo", "Jordao", "Marechal Thaumaturgo", "Porto Walter"]),
-        ("Brasileia", ["Sena Madureira", "Epitaciolandia", "Xapuri", "Rio Branco"]),
-        ("Senador Guiomard", ["Porto Acre", "Acrelandia", "Placido de Castro", "Capixaba"]),
-        ("Mancio Lima", ["Rodrigues Alves", "Cruzeiro do Sul"]),
-        ("Xapuri", ["Epitaciolandia", "Capixaba"]),
-        ("Marechal Thaumaturgo", ["Porto Walter"]),
-        ("Placido de Castro", ["Acrelandia", "Capixaba"]),
-        ("Bujari", ["Sena Madureira", "Porto Acre"]),
-        ("Manoel Urbano", ["Feijo", "Sena Madureira"]),
-        ("Jordao", ["Feijo", "Marechal Thaumaturgo"]),
-        ("Assis Brasil", ["Sena Madureira", "Brasileia"]),
-        ("Santa Rosa do Purus", ["Feijo", "Manoel Urbano"])
+        ("Rio Branco", [("Sena Madureira", 0), ("Xapuri", 0), ("Bujari", 0), ("Porto Acre", 0), ("Senador Guiomard", 0), ("Capixaba", 0)]),
+        ("Cruzeiro do Sul", [("Rodrigues Alves", 0), ("Porto Walter", 0), ("Tarauaca", 0)]),
+        ("Tarauaca", [("Feijo", 0), ("Jordao", 0), ("Marechal Thaumaturgo", 0), ("Porto Walter", 0)]),
+        ("Brasileia", [("Sena Madureira", 0), ("Epitaciolandia", 0), ("Xapuri", 0), ("Rio Branco", 0)]),
+        ("Senador Guiomard", [("Porto Acre", 0), ("Acrelandia", 0), ("Placido de Castro", 0), ("Capixaba", 0)]),
+        ("Mancio Lima", [("Rodrigues Alves", 0), ("Cruzeiro do Sul", 0)]),
+        ("Xapuri", [("Epitaciolandia", 0), ("Capixaba", 0)]),
+        ("Marechal Thaumaturgo", [("Porto Walter", 0)]),
+        ("Placido de Castro", [("Acrelandia", 0), ("Capixaba", 0)]),
+        ("Bujari", [("Sena Madureira", 0), ("Porto Acre", 0)]),
+        ("Manoel Urbano", [("Feijo", 0), ("Sena Madureira", 0)]),
+        ("Jordao", [("Feijo", 0), ("Marechal Thaumaturgo", 0)]),
+        ("Assis Brasil", [("Sena Madureira", 0), ("Brasileia", 0)]),
+        ("Santa Rosa do Purus", [("Feijo", 0), ("Manoel Urbano", 0)])
     ]
 
     for v1, vizinhos in fronteira:
-        for v2 in vizinhos:
-            i_v1 = municipios.index(v1)
-            i_v2 = municipios.index(v2)
-            grafo.add_aresta(i_v1, i_v2)
+        for v2, comprimento in vizinhos:
+            grafo.adicionar_aresta(v1, v2, comprimento)
 
-    grafo.imprimir_grafo()
+    origem = 'Rio Branco' 
+    destino = 'Jordao' 
+    
+    melhor_caminho, distancia_total = encontrar_menor_caminho(grafo, origem, destino) 
+    imprimir_resultado(melhor_caminho, distancia_total)
+    print(grafo.arestas)
 
-municipiosAcre()
+# sergipe()
+acre()
