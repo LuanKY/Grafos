@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de Rotas</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      div {
+        margin-bottom: 10px;
+      }
+
+      label {
+        display: block;
+        font-weight: bold;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+      }
+
+      button {
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      #resultado,
+      #caminho {
+        margin-top: 20px;
+        padding: 10px;
+      }
+
+      @media screen and (max-width: 600px) {
+        body {
+          padding: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Calculadora de Rotas</h1>
+    <div>
+      <label for="state">Estado:</label>
+      <select id="state">
+        <option value="sergipe">Sergipe</option>
+        <option value="acre">Acre</option>
+      </select>
+    </div>
+    <div>
+      <label for="origin">Origem:</label>
+      <input type="text" id="origin" />
+    </div>
+    <div>
+      <label for="destination">Destino:</label>
+      <input type="text" id="destination" />
+    </div>
+    <button id="calcular">Calcular</button>
+    <div id="resultado"></div>
+    <div id="caminho"></div>
+
+    <script src="../static/script.js"></script>
+  </body>
+</html>
